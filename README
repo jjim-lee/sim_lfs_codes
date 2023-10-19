@@ -1,0 +1,38 @@
+Reference : https://github.com/codes-org/codes/wiki/tutorial-installation
+Written by Jinhyuk Lee at Goethe University
+
+ < Instruction>
+
+1. Setup the environment
+	1-1. Get the build directory
+		mkdir codes-dev
+	1-2. Clone & install ROSS
+		cd codes-dev
+		git clone http://github.com/ross-org/ROSS.git
+		mkdir build-ross
+		cd build-ross
+		cmake -DCMAKE_INSTALL_PREFIX:path=`pwd` -DCMAKE_C_COMPILER=$(which mpicc) -DCMAKE_CXX_COMPILER=$(which mpicxx) ../ROSS
+		make install
+	1-3. Clone & install CODES 
+		cd codes-dev 					// This is the one we created in step 1-1
+		git clone http://github.com/codes-org/codes.git
+		cd codes
+		./prepare.sh
+		cd ..							// come back to 'codes-dev' directory
+		mkdir build-codes
+		cd build-codes
+		../codes/configure --prefix=<PATH-TO-'codes-dev'>/codes-dev/build-codes PKG_CONFIG_PATH=<PATH-TO-'codes-dev'>/codes-dev/build-ross/lib/pkgconfig CC=mpicc CXX=mpicxx CFLAGS=-g CXXFLAGS=-g
+		make install
+
+2. Change 'Makefile' of my source code
+	: Only 2 lines of Makefile need to be changed to get right path
+
+3. Build my source code
+	$ make example_jh
+
+4. How to use:
+	$ mpirun -n 2 ./example_jh --synch=3 --codes-config=example_jh.conf --stripe-size=4 --stripe-count=5	
+
+	But you can change above value in shell script and run shell script instead of above command.
+	To use this shell script, this also needs path add. Please check in the shell script.
+	$ ./run_my_simulation.sh
